@@ -7,11 +7,6 @@ Specifically, multilayer perceptron(MLP) networks and non-linear least squares(N
 ## Usage
 
 ### MLP networks
-- <code>[HFD](./HFD)</code>: This folder contains all the source code for implementing the MLP problems that are considered in the paper. 
-- <code>[HFD/algorithms](./HFD/algorithms)</code> contains the implementation of (sub-sampled) trust-region, gaussian-newton, momentum sgd algorithms.
-- <code>[HFD/mdoel](./HFD/model)</code> constains the implementation of general neural network framework.
-- <code>[HFD/cifar_classification](./HFD/cifar_classification)</code>: a demo function that uses various algorithms to train a 1-hidden-layer network on cifar10.
-- <code>[HFD/mnist_autoencoder](./HFD/mnist_autoencoder)</code>: a demo function that uses various algorithms to train autoencoder on mnist. 
 
 #### Example 1: Cifar10 Classification
 Download the Cifar-10 datasets
@@ -39,8 +34,6 @@ In the Matlab Command Window, run
 ```
 
 ### NLS
-- <code>[nls](./nls)</code>: This folder contains all the source code for implementing the binary linear classification task using square loss (which gives a non-linear square problem). 
-- <code>[nls/algorithms](./nls/algorithms)</code> contains the implementation of (sub-sampled) TR, ARC, GN, GD, LBFGS algorithms for non-linear least squares.
 
 #### Example 3: NLS on ijcnn1
 ```
