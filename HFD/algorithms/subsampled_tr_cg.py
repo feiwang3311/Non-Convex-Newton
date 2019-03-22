@@ -110,13 +110,15 @@ def subsampled_tr_cg(model, X, y, X_test, y_test, lamda, options):
   print('initial setup of parameters:')
   if hasattr('options', 'params'):
       model.setupParameters(option.params)
-  param = None # NOTE: I think param will be part of the model??
+  else: 
+      params = sprandn(psize,1,0.1)*0.5;
 
-  # if isfield(options,'params')
-  #     params = options.params;
-  # else
-  #     params = sprandn(psize,1,0.1)*0.5;
-  # end
+  #param = None # NOTE: I think param will be part of the model??
+
+  if hasattr(options,'params'):
+      params = options.params;
+  else:
+      #Bug is here: !!!!  params = sprandn(psize,1,0.1)*0.5;
 
   # initialize parameters
   print('initial setup:');
