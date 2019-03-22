@@ -8,7 +8,6 @@ import argparse
 import numpy as np
 from model.compute_model import myMLP
 from algorithms.cg_steihaug import cg_steihaug
-import torch
 
 def subsampled_tr_cg(model, X, y, X_test, y_test, lamda, options):
   # subsampled trust-region method for deep learning
@@ -35,7 +34,7 @@ def subsampled_tr_cg(model, X, y, X_test, y_test, lamda, options):
   #                               parameters for adaptivity
   #           options.hs:         subsampling Hessian size
 
-  net = myMLP(model)
+  net = myMLP(model, options.init) # how are parameter initialized
   psize = net.parameterSize()
   layersizes = model.layersizes
   numlayers = model.numlayers
@@ -110,15 +109,7 @@ def subsampled_tr_cg(model, X, y, X_test, y_test, lamda, options):
   print('initial setup of parameters:')
   if hasattr('options', 'params'):
       model.setupParameters(option.params)
-  else: 
-      params = sprandn(psize,1,0.1)*0.5;
-
-  #param = None # NOTE: I think param will be part of the model??
-
-  if hasattr(options,'params'):
-      params = options.params;
-  else:
-      #Bug is here: !!!!  params = sprandn(psize,1,0.1)*0.5;
+  param = None # NOTE: param will be part of the model
 
   # initialize parameters
   print('initial setup:');
@@ -135,19 +126,19 @@ def subsampled_tr_cg(model, X, y, X_test, y_test, lamda, options):
     idx = np.random.choice(n, sz)
     x_sample = X[idx]
     y_sample = y[idx]
-#     (_, _, hess, _) = compute_model(model, params, x_sample, y_sample)
-    hess = net.hess(x_sample, y_sample)
-#    (ll_err, grad)  = compute_model(model, params, X, y)
-    (ll_err, grad)  = net.gradient(X, y) # TODO: we are not passing params explicitly (will that be a problem?)
+    # hess is a function v => hessian dot v
+    hess = net.hess(x_sample, y_sample) # (_, _, hess, _) = compute_model(model, params, x_sample, y_sample)
+    (ll_err, grad) = net.gradient(X, y) # (ll_err, grad)  = compute_model(model, params, X, y)
     ll = ll_err[0]
     tr_err = ll_err[1]
-#    tr_loss = ll + 0.5 * lamda * np.inner(params, params)
-    tr_loss = ll # Note: in pytorch, l2 regularization is added in optimized (via weight decay)
-#    grad = grad + lamda * params
-    # HessV = lambda V: hess(V) + lamda * V # Note: let's keep using this one for hessian
-    def HessV(v):
-      temp = hess(v)
-      return temp + lamda * v
+
+    # this needs to be done for every loop because params is updated (TODO: double check)
+    params = net.flatten_params()
+
+    tr_loss = ll + 0.5 * lamda * np.inner(params, params)
+    grad = grad + lamda * params
+    HessV = lambda v: hess(v) + lamda * v
+
     noProps = noProps + X.shape[0]  # size(X,2)
     te_loss_err = net.loss(X_test, y_test);
     te_loss = te_loss_err[0]
@@ -157,9 +148,8 @@ def subsampled_tr_cg(model, X, y, X_test, y_test, lamda, options):
     options.tr_errs[iter] = tr_err
     options.te_losses[iter] = te_loss
     options.te_errs[iter] = te_err
-    grad_np = grad.detach().numpy()
-    grad_norm_inf = np.linalg.norm(grad_np, np.inf)
-    grad_norm_2   = np.linalg.norm(grad_np, 2)
+    grad_norm_inf = np.linalg.norm(grad, np.inf)
+    grad_norm_2   = np.linalg.norm(grad, 2)
     options.tr_grad[iter] = grad_norm_inf
     options.tr_noProps[iter] = noProps
     options.tr_noMVPs[iter] = noMVPs

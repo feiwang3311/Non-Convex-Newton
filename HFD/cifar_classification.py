@@ -3,7 +3,6 @@ from __future__ import division
 from __future__ import print_function
 
 import os
-import os
 import sys
 import math
 import argparse
@@ -82,34 +81,19 @@ def cifar_classification():
     X, y, X_test, y_test = readCifar10Data()
     n = X.shape[0]
     inputd = X.shape[1]
+    outputd = 10
     X, y, X_test, y_test = normalize(X, y, X_test, y_test)
 
-    outputd = 10
     Model = collections.namedtuple('Model', ['layersizes','layertypes','numlayers','type'])
-    model = Model(layersizes = [inputd, 512, outputd],
-                  layertypes = ['logistic', 'softmax'], # TODO: is logistic implemented?
+    layerSize = 512
+    model = Model(layersizes = [inputd, layerSize, outputd],
+                  layertypes = ['logistic', 'softmax'],
                   numlayers  = 2,
                   type = 'classification')
-    psize = inputd * 512 + 512
+    psize = inputd * layerSize + layerSize
     lamda = 0 # l2 regularization
 
-    # TODO: pass init to net to control the initialization (otherwise random norm is the default)
-    # %% Initialize the Model
-    # if init == 0
-    #     initial_guess = zeros(psize,1); sub_dir = ['/zeros_', num2str(seed)];
-    #     fprintf('\n\nZero Initialization! \n\n');
-    # elseif init == 1
-    #     initial_guess = randn(psize,1); initial_guess = initial_guess/norm(initial_guess); sub_dir = ['/randn_normalized_', num2str(seed)];
-    #     fprintf('\n\nNormalized Random Initialization! \n\n');
-    # else
-    #     initial_guess = randn(psize,1); sub_dir = ['/randn_', num2str(seed)];
-
-    #     fprintf('\n\nRandom Initialization! \n\n');
-    # end
-    # options.params = initial_guess;
-
     options = parser.parse_args()
-    # TODO: in Python, we probably cannot do this field assignment directly
     options.name = 'cifar10_classification';
     options.inner_iters = 250;
     options.max_delta = float('Inf')
@@ -119,7 +103,12 @@ def cifar_classification():
     options.maxMVPs = float('Inf');
     options.maxNoProps = options.maxNP;
 
-    sub_dir = 'rand_norm'
+    if options.init == 0:
+      sub_dir = "".join(['/zeros_', str(options.seed)])
+    elif options.init == 1:
+      sub_dir = "".join(['randn_normalized_', str(options.seed)])
+    else:
+      sub_dir = "".join(['/randn', str(options.seed)])
     dir_name = "".join(['./results/',options.name,sub_dir]);
     if not os.path.isdir(dir_name):
       os.makedirs(dir_name)

@@ -27,7 +27,6 @@ def cg_steihaug(H, g, delta, params, x0 = None):
   #         iflag:  termination condition
   #
   #--------------------------------------------------------------------------
-  g = g.detach().numpy()
   tr_model = lambda x: 0.5 * np.inner(x, H(x)) + np.inner(x, g)
   n = g.size
   errtol = params[0]
