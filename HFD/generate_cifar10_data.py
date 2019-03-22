@@ -30,7 +30,6 @@ import urllib.request
 import tarfile
 from six.moves import cPickle as pickle
 from six.moves import xrange  # pylint: disable=redefined-builtin
-import tensorflow as tf
 
 CIFAR_FILENAME = 'cifar-10-python.tar.gz'
 CIFAR_FILENAME_BINARY = 'cifar-10-binary.tar.gz'
@@ -58,13 +57,6 @@ def download_and_extract(data_dir):
   tarfile.open(os.path.join(data_dir, CIFAR_FILENAME_BINARY),
                'r:gz').extractall(data_dir)
 
-def _int64_feature(value):
-  return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
-
-
-def _bytes_feature(value):
-  return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
-
 
 def _get_file_names():
   """Returns the file names expected to exist in the input_dir."""
@@ -75,47 +67,9 @@ def _get_file_names():
   return file_names
 
 
-def read_pickle_from_file(filename):
-  with tf.gfile.Open(filename, 'rb') as f:
-    if sys.version_info >= (3, 0):
-      data_dict = pickle.load(f, encoding='bytes')
-    else:
-      data_dict = pickle.load(f)
-  return data_dict
-
-
-def convert_to_tfrecord(input_files, output_file):
-  """Converts a file to TFRecords."""
-  print('Generating %s' % output_file)
-  with tf.python_io.TFRecordWriter(output_file) as record_writer:
-    for input_file in input_files:
-      data_dict = read_pickle_from_file(input_file)
-      data = data_dict[b'data']
-      labels = data_dict[b'labels']
-      num_entries_in_batch = len(labels)
-      for i in range(num_entries_in_batch):
-        example = tf.train.Example(features=tf.train.Features(
-            feature={
-                'image': _bytes_feature(data[i].tobytes()),
-                'label': _int64_feature(labels[i])
-            }))
-        record_writer.write(example.SerializeToString())
-
-
 def main(data_dir):
   print('Download from {} and extract.'.format(CIFAR_DOWNLOAD_URL))
   download_and_extract(data_dir)
-#  file_names = _get_file_names()
-#  input_dir = os.path.join(data_dir, CIFAR_LOCAL_FOLDER)
-#  for mode, files in file_names.items():
-#    input_files = [os.path.join(input_dir, f) for f in files]
-#    output_file = os.path.join(data_dir, mode + '.tfrecords')
-#    try:
-#      os.remove(output_file)
-#    except OSError:
-#      pass
-#    # Convert to tf.train.Example and write the to TFRecords.
-#    convert_to_tfrecord(input_files, output_file)
   print('Done!')
 
 
