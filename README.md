@@ -16,7 +16,7 @@ Specifically, multilayer perceptron(MLP) networks and non-linear least squares(N
 #### Example 1: Cifar10 Classification
 Download the Cifar-10 datasets
 ```
-Wget https://www.cs.toronto.edu/~kriz/cifar-10-matlab.tar.gz
+wget https://www.cs.toronto.edu/~kriz/cifar-10-matlab.tar.gz
 ```
 or
 
@@ -24,7 +24,12 @@ run the command
 ```
 bash download_cifar10.sh
 ```
+or
 
+run the command
+```
+bash scripts.sh
+```
 #### Example 2: mnist Autoencoder
 In the Matlab Command Window, run
 
