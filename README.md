@@ -14,22 +14,20 @@ Specifically, multilayer perceptron(MLP) networks and non-linear least squares(N
 - <code>[HFD/mnist_autoencoder](./HFD/mnist_autoencoder)</code>: a demo function that uses various algorithms to train autoencoder on mnist. 
 
 #### Example 1: Cifar10 Classification
+Download the Cifar-10 datasets
 ```
-Download Cifar10 dataset from here: https://www.cs.toronto.edu/~kriz/cifar-10-matlab.tar.gz
+Wget https://www.cs.toronto.edu/~kriz/cifar-10-matlab.tar.gz
 ```
 or
+
 run the command
 ```
 bash download_cifar10.sh
 ```
-In the Matlab Command Window, run
-```
-# check details of the function for different configurations
->> result = cifar_classifcation
-```
 
 #### Example 2: mnist Autoencoder
 In the Matlab Command Window, run
+
 ```
 # check details of the function for different configurations
 >> result = mnist_autoencoder
@@ -47,12 +45,7 @@ or run the command
 ```
 bash download_ijcnn1.sh
 ```
-In the Matlab Command Window, run
-```
-# this will generate the plots of all algorithms.
-# check the details of the function for more options.
->> blc_demo('ijcnn1')
-```
+
 
 
 ## References
