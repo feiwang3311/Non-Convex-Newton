@@ -124,8 +124,9 @@ def cifar_classification():
     elif options.method == 'TR-CG':
       print('\n\n------------------- TR: delta = %g ----------------\n\n' % options.delta)
       file_name_tr_cg = "".join([file_name,'_tr_cg','_delta_',str(options.delta),'.mat'])
-      if os.path.isfile(file_name_tr_cg):
-        load(file_name_tr_cg, 'options') # resume training
+      print("We don't have a load fucntion")
+      #if os.path.isfile(file_name_tr_cg):
+          #load(file_name_tr_cg, 'options') # resume training
       (params, options) = subsampled_tr_cg(model,X,y,X_test,y_test,lamda,options)
       parsave(file_name_tr_cg, options)
 
