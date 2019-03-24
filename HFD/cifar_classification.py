@@ -141,7 +141,7 @@ def cifar_classification():
 def parsave(file_name, options):
   # save a pickle dump
   with open(file_name, 'w') as f:
-    pickle.dump(f, options)
+    pickle.dump(options, f, pickle.HIGHEST_PROTOCOL)
 
 if __name__ == '__main__':
   cifar_classification()
